@@ -1,5 +1,6 @@
 from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QLabel, QWidget, QApplication, QPushButton, QComboBox, QMainWindow, QGridLayout
+from PyQt6.QtWidgets import QLabel, QWidget, QApplication, QPushButton, QComboBox, QMainWindow, QGridLayout, \
+    QTableWidget, QTableWidgetItem
 import sys
 
 
@@ -17,6 +18,11 @@ class MainWindow(QMainWindow):
 
         about_action = QAction("About", self)
         menu_bar.addAction(about_action)
+
+        self.table = QTableWidget()
+        self.table.setColumnCount(4)
+        self.table.setHorizontalHeaderLabels(("Student Name", "Student ID", "Course", "Phone Number"))
+        self.setCentralWidget(self.table)
 
 
 
