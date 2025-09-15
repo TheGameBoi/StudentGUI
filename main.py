@@ -1,6 +1,6 @@
 from idlelib.help_about import AboutDialog
 from PyQt6.QtWidgets import QLabel, QWidget, QApplication, QPushButton, QComboBox, QMainWindow, QGridLayout, \
-    QTableWidget, QTableWidgetItem, QDialog, QLineEdit, QVBoxLayout, QToolBar, QTextEdit
+    QTableWidget, QTableWidgetItem, QDialog, QLineEdit, QVBoxLayout, QToolBar, QTextEdit, QStatusBar
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt
 import sqlite3
@@ -13,13 +13,10 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Student Management App")
         self.setMinimumSize(500, 400)
-
         student_action = QAction(QIcon("icons/add.png"), "Add Student", self)
         student_action.triggered.connect(self.insertdialog)
-
         search_bar = QAction(QIcon("icons/search.png"), "Search", self)
         search_bar.triggered.connect(self.search)
-
         about_action = QAction("About", self)
         about_action.triggered.connect(self.about)
 
@@ -29,12 +26,36 @@ class MainWindow(QMainWindow):
         self.table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.table)
 
+        # Create a Toolbar
         toolbar = QToolBar(self)
         toolbar.setMovable(True)
         self.addToolBar(toolbar)
         toolbar.addAction(student_action)
         toolbar.addAction(search_bar)
         toolbar.addAction(about_action)
+
+        # Create a Statusbar
+        self.status = QStatusBar()
+        self.setStatusBar(self.status)
+
+        # Detect Cell Click
+        self.table.cellClicked.connect(self.cell_clicked)
+
+    def cell_clicked(self):
+        edit_button = QPushButton("Edit Record")
+        edit_button.clicked.connect(self.edit)
+
+        delete_button = QPushButton("Delete Record")
+        delete_button.clicked.connect(self.delete)
+
+        children = self.findChildren(QPushButton)
+        if children:
+            for adult in children:
+                self.status.removeWidget(adult)
+
+        self.status.addWidget(delete_button)
+        self.status.addWidget(edit_button)
+
 
     def load_data(self):
         connection = sqlite3.connect("database.db")
@@ -59,6 +80,13 @@ class MainWindow(QMainWindow):
     def about(self):
         dialog = AboutDialog("Student Management App")
 
+    def edit(self):
+        dialog = EditDialog()
+        dialog.exec()
+
+    def delete(self):
+        dialog = DeleteDialog()
+        dialog.exec()
 
 
 class InsertDialog(QDialog):
@@ -149,7 +177,11 @@ class SearchDialog(QDialog):
         connection.close()
 
 
+class EditDialog(QDialog):
+    pass
 
+class DeleteDialog(QDialog):
+    pass
 
 app = QApplication(sys.argv)
 window = MainWindow()
