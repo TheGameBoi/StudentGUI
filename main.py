@@ -13,10 +13,16 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Student Management App")
         self.setMinimumSize(500, 400)
+
+        # Student Toolbar
         student_action = QAction(QIcon("icons/add.png"), "Add Student", self)
         student_action.triggered.connect(self.insertdialog)
+
+        # Search Toolbar
         search_bar = QAction(QIcon("icons/search.png"), "Search", self)
         search_bar.triggered.connect(self.search)
+
+        # About Toolbar
         about_action = QAction("About", self)
         about_action.triggered.connect(self.about)
 
@@ -70,7 +76,6 @@ class MainWindow(QMainWindow):
     def insertdialog(self):
         dialog = InsertDialog()
         dialog.setWindowTitle("Add Student")
-        dialog.setGeometry(300, 300, 500, 200)
         dialog.exec()
 
     def search(self):
@@ -78,7 +83,8 @@ class MainWindow(QMainWindow):
         dialog.exec()
 
     def about(self):
-        dialog = AboutDialog("Student Management App")
+        dialog = AboutDialog()
+        dialog.exec()
 
     def edit(self):
         dialog = EditDialog()
@@ -87,6 +93,19 @@ class MainWindow(QMainWindow):
     def delete(self):
         dialog = DeleteDialog()
         dialog.exec()
+
+
+
+class AboutDialog(QMessageBox):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("About")
+        content = f"""
+        Student Management App Version 1.0
+        Made by TheGameBoi
+        """
+        self.setText(content)
+
 
 
 class InsertDialog(QDialog):
